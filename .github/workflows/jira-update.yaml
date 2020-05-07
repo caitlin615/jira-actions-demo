@@ -25,7 +25,10 @@ jobs:
             repo: context.repo.repo,
             issue_number: context.payload.pull_request.number
           })
-          return comments.find(c => c.body.startsWith("[auto-generated] Ticket created:"))
+          for (const c in comments) {
+            console.log(c.body)
+          }
+          # return comments.find(c => c.body.startsWith("[auto-generated] Ticket created:"))
 
     - name: Extract issue from title
       id: extract
