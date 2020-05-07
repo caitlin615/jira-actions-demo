@@ -15,12 +15,6 @@ jobs:
     #     JIRA_USER_EMAIL: ${{ secrets.JIRA_USER_EMAIL }}
     #     JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
 
-    - name: Get PR number
-      id: pr
-      run: |
-        url="${{github.event.pull_request_review.pull_request_url }}"
-        number=${url##*/}
-        echo ::set-output name=number::$number
     # - name: Find Jira Comment
     #   uses: peter-evans/find-comment@v1
     #   id: ticket-comment
@@ -29,17 +23,16 @@ jobs:
     #     issue-number: ${{ steps.pr.outputs.number }}
     #     body-includes: "[auto-generated] Ticket created:"
 
-
-
     - uses: actions/github-script@0.9.0
       id: github-comment
       with:
         script: |
-          console.log("${{ steps.pr.outputs.number }}")
+          const pull_number = "${{ github.event.pull_request_review.pull_request.number }}"
+          console.log(pull_number)
           const comments = await github.pulls.listComments({
             owner: context.repo.owner,
             repo: context.repo.repo,
-            pull_number: ${{ steps.pr.outputs.number }}
+            pull_number
           })
           console.log(JSON.stringify(comments.data))
 
