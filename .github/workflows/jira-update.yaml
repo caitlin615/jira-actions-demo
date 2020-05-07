@@ -43,4 +43,4 @@ jobs:
       if: contains(github.event.review.state, 'approved')
       with:
         issue: "${{ steps.extract.outputs.jira_id }}"
-        comment: "APPROVED by: ${{ github.event.review.user.login }}. See ${{ github.event.review.html_url }}."
+        comment: "[github-actions] APPROVED by: ${{ github.event.review.user.login }}. See ${{ github.event.review.html_url }}."
