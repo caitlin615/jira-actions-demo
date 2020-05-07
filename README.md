@@ -21,3 +21,21 @@ GitHub secrets:
 * `JIRA_ISSUE_TYPE`: Jira issue type to use when creating new issue
 * `JIRA_TRANSITION_CLOSE_MERGED`: Where to transition Issue when the PR is closed and merged.
 * `JIRA_TRANSITION_CLOSE_UNMERGED`: Where to transition Issue when PR is closed _without_ merging.
+
+### Requiring a specific team for PR approvals
+
+[.github/workflows/required-approvers.yaml](.github/workflows/required-approvers.yaml) gives you more fine-grained control over who is required to approve a PR before it can be merged. It will fail a GitHub check if the PR does not have at least 2 approvers from the specified group. This provides additional protections outside of the typical Codeowners
+required approvals.
+
+**A use case for this would be:**
+
+* You want team *Alpha* and team *Beta* to both be codeowners and you want at least 1 person from each team to approve every PR.
+* GitHub branch protection rules allows you to set the number of `Required approving reviews` to 2 and set `Require review from Code Owners`
+* The problem is, a PR can get approved for merge by 2 members of *Alpha* without *Beta* ever approving.
+
+This GitHub action allows you to require approvals from each team explicitly
+
+##### Secrets
+
+* `TEAM_SLUG_REQUIRED_APPROVERS`: GitHub team slug within the owner's org. At least 2 members of this group will be required to approve a PR
+* `MIN_APPROVERS`: Minimum number of approvers required from this team

@@ -1,0 +1,41 @@
+on:
+  [pull_request, pull_request_review]
+
+name: Update Jira Ticket
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+
+    - uses: actions/github-script@0.9.0
+      id: github-comment
+      env:
+        TEAM_SLUG: ${{ secrets.TEAM_SLUG_REQUIRED_APPROVERS }}
+        MIN_APPROVERS: ${{ secrets.MIN_APPROVERS }}
+      with:
+        script: |
+          // Get all the team member logins
+          const team_approvers = await github.teams.listMembersInOrg({
+            org: context.repo.owner,
+            team_slug: process.env.TEAM_SLUG,
+            pull_number: context.payload.pull_request.number
+          })
+          const team_approver_logins = team_approver.map(t => t.login)
+
+          // Get all the reviews
+          const reviews = await github.pulls.listReviews({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            pull_number: context.payload.pull_request.number
+          })
+
+          // Filter reviews by approvals and if the approver is in the team specified
+          const approvers = reviews.data.filter(r => {
+            return r.state == "APPROVED" && team_approver_logins.contains(r.user.login)
+          })
+
+          // Fail the step if there are not enough approvers
+          if (approvers.length) < process.env.MIN_APPROVERS {
+            core.setFailed(`${process.env.MIN_APPROVERS} approval(s) from ${process.env.TEAM_SLUG} are required")
+          }
