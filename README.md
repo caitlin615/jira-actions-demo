@@ -1,6 +1,8 @@
 # jira-actions-demo
 
-## These GitHub Actions handle the following workflow in Jira
+## About
+
+The GitHub Action workflows in this repo do the following
 
 * When a new PR is opened, a new Jira ticket is created
 * A comment is made on the PR with a link to the new Jira ticket
