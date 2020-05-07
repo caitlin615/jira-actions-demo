@@ -35,7 +35,8 @@ jobs:
         jira_url=$(echo -n $TITLE | sed -r 's/\[auto-generated\] Ticket created: (.*)/\1/')
         jira_id=${jira_url##*/}
         echo ::set-output name=jira_id::$jira_id
-    - uses: hmarr/debug-action
+    - name: Debug Action
+      uses: hmarr/debug-action@v1.0.0
     # - name: Comment on Jira Ticket
     #   uses: atlassian/gajira-comment@master
     #   if: ${{ github.event.pull_request_review.state == "APPROVED" }}
