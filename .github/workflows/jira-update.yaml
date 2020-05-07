@@ -27,6 +27,7 @@ jobs:
       id: github-comment
       with:
         script: |
+          console.log(JSON.stringify(context.payload))
           const pull_number = context.payload.pull_request_review.pull_request.number
           console.log(pull_number)
           const comments = await github.pulls.listComments({
