@@ -25,10 +25,7 @@ jobs:
             repo: context.repo.repo,
             issue_number: context.payload.pull_request.number
           })
-          for (const c of comments) {
-            console.log(c.body)
-          }
-          const ticket_comment = comments.find(c => c.body.startsWith("[auto-generated] Ticket created:"))
+          const ticket_comment = comments.data.find(c => c.body.startsWith("[auto-generated] Ticket created:"))
           console.log(ticket_comment.body)
           return ticket_comment.body
 
