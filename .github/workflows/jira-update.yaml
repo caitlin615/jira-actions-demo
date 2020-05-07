@@ -39,7 +39,7 @@ jobs:
 
     - name: Comment on Jira Ticket
       uses: atlassian/gajira-comment@master
-      if: github.event.pull_request_review.state == "APPROVED"
+      if: github.event.pull_request_review.state == APPROVED
       with:
         issue: "${{ steps.extract.outputs.jira_id }}"
         comment: "APPROVED by: ${{ github.event.pull_request_review.user.login }}. See ${{ github.event.pull_request_review.html_url }}."
