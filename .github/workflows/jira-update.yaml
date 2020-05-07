@@ -19,12 +19,15 @@ jobs:
       id: pr
       run: |
         url="${{github.event.pull_request_review.pull_request_url }}"
+        echo $url
         number=${url##*/}
+        echo $number
         echo ::set-output name=number::$number
     - name: Find Jira Comment
       uses: peter-evans/find-comment@v1
       id: ticket-comment
       with:
+        issue_number: ${{ steps.pr.outputs.number }}
         issue-number: ${{ steps.pr.outputs.number }}
         body-includes: "[auto-generated] Ticket created:"
 
