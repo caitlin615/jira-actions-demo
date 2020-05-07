@@ -27,7 +27,7 @@ jobs:
       id: github-comment
       with:
         script: |
-          const pull_number = "${{ github.event.pull_request_review.pull_request.number }}"
+          const pull_number = context.payload.pull_request_review.pull_request.number
           console.log(pull_number)
           const comments = await github.pulls.listComments({
             owner: context.repo.owner,
