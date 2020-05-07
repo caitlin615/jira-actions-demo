@@ -36,11 +36,11 @@ jobs:
         JIRA_BASE_URL: ${{ secrets.JIRA_BASE_URL }}
         JIRA_USER_EMAIL: ${{ secrets.JIRA_USER_EMAIL }}
         JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
-    - name: Debug Action
-      uses: hmarr/debug-action@v1.0.0
+    # - name: Debug Action
+    #   uses: hmarr/debug-action@v1.0.0
     - name: Comment on Jira Ticket
       uses: atlassian/gajira-comment@master
-      if: contains(github.event.pull_request_review.state, 'APPROVED')
+      if: contains(github.event.review.state, 'approved')
       with:
         issue: "${{ steps.extract.outputs.jira_id }}"
-        comment: "APPROVED by: ${{ github.event.pull_request_review.user.login }}. See ${{ github.event.pull_request_review.html_url }}."
+        comment: "APPROVED by: ${{ github.event.review.user.login }}. See ${{ github.event.review.html_url }}."
