@@ -25,12 +25,12 @@ jobs:
             repo: context.repo.repo,
             issue_number: context.payload.pull_request.number
           })
-          return comments.data.find(c => c.body.startsWith("[auto-generated] Ticket created:"))
+          return comments.data.find(c => c.body.startsWith("[auto-generated] Ticket created:")).body
 
     - name: Extract issue from title
       id: extract
       env:
-        TITLE: "${{ steps.github-comment.outputs.body }}"
+        TITLE: "${{ steps.github-comment.outputs.result }}"
       run: |
         jira_url=$(echo -n $TITLE | sed -r 's/\[auto-generated\] Ticket created: (.*)/\1/')
         jira_id=${jira_url##*/}
