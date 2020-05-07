@@ -19,28 +19,36 @@ jobs:
       id: pr
       run: |
         url="${{github.event.pull_request_review.pull_request_url }}"
-        echo $url
         number=${url##*/}
-        echo $number
         echo ::set-output name=number::$number
-    - name: Find Jira Comment
-      uses: peter-evans/find-comment@v1
-      id: ticket-comment
-      with:
-        issue_number: ${{ steps.pr.outputs.number }}
-        issue-number: ${{ steps.pr.outputs.number }}
-        body-includes: "[auto-generated] Ticket created:"
+    # - name: Find Jira Comment
+    #   uses: peter-evans/find-comment@v1
+    #   id: ticket-comment
+    #   with:
+    #     issue_number: ${{ steps.pr.outputs.number }}
+    #     issue-number: ${{ steps.pr.outputs.number }}
+    #     body-includes: "[auto-generated] Ticket created:"
+
+
 
     - uses: actions/github-script@0.9.0
       id: github-comment
       with:
         script: |
-          const comment = await github.pulls.getComment({
+          console.log("${{ steps.pr.outputs.number }}")
+          const comments = await github.pulls.listComments({
             owner: context.repo.owner,
             repo: context.repo.repo,
-            comment_id: ${{ steps.ticket-comment.outputs.comment-id }},
+            pull_number: ${{ steps.pr.outputs.number }}
           })
-          console.log(JSON.stringify(comment.data))
+          console.log(JSON.stringify(comments.data))
+
+# const comment = await github.pulls.getComment({
+#   owner: context.repo.owner,
+#   repo: context.repo.repo,
+#   comment_id: ${{ steps.ticket-comment.outputs.comment-id }},
+# })
+# console.log(JSON.stringify(comment.data))
 
     # - name: Extract issue from title
     #   id: extract
