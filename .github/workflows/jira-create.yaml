@@ -1,0 +1,39 @@
+on:
+  pull_request:
+    types: [opened]
+
+name: Create Jira Ticket
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Login
+      uses: atlassian/gajira-login@master
+      env:
+        JIRA_BASE_URL: ${{ secrets.JIRA_BASE_URL }}
+        JIRA_USER_EMAIL: ${{ secrets.JIRA_USER_EMAIL }}
+        JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
+
+    - name: Create JIRA ticket
+      id: create
+      uses: atlassian/gajira-create@master
+      with:
+        project: ${{ secrets.JIRA_PROJECT_ID }}
+        issuetype: ${{ secrets.JIRA_ISSUE_TYPE }}
+        summary: |
+          ${{ github.event.pull_request.title }} (${{ github.repository }})
+        description: |
+          ${{ github.event.pull_request.body }}
+
+          ---
+          Pull Request: ${{ github.event.pull_request.html_url }}
+
+    # This will allow us to query the newly-created ticket later on in the process
+    - name: Create Ticket comment
+      uses: jungwinter/comment@v1
+      with:
+        type: create
+        body: "[auto-generated] Ticket created: ${{ secrets.JIRA_BASE_URL }}/browse/${{ steps.create.outputs.issue }}"
+        issue_number: ${{ github.event.number }}
+        token: ${{ secrets.GITHUB_TOKEN }}
