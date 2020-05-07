@@ -35,6 +35,11 @@ jobs:
         jira_url=$(echo -n $TITLE | sed -r 's/\[auto-generated\] Ticket created: (.*)/\1/')
         jira_id=${jira_url##*/}
         echo ::set-output name=jira_id::$jira_id
+    - name: Debug ticket
+      id: debug
+      env:
+        JIRA_ID: "${{ steps.extract.outputs.jira_id }}"
+      run: echo $JIRA_ID
     # - name: Debug Action
     #   uses: hmarr/debug-action@v1.0.0
     # - name: Comment on Jira Ticket
