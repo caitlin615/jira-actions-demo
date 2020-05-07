@@ -25,9 +25,7 @@ jobs:
             repo: context.repo.repo,
             issue_number: context.payload.pull_request.number
           })
-          const ticket_comment = comments.data.find(c => c.body.startsWith("[auto-generated] Ticket created:"))
-          console.log(ticket_comment.body)
-          return ticket_comment.body
+          return comments.data.find(c => c.body.startsWith("[auto-generated] Ticket created:"))
 
     - name: Extract issue from title
       id: extract
@@ -37,8 +35,8 @@ jobs:
         jira_url=$(echo -n $TITLE | sed -r 's/\[auto-generated\] Ticket created: (.*)/\1/')
         jira_id=${jira_url##*/}
         echo ::set-output name=jira_id::$jira_id
-    - name: Debug Action
-      uses: hmarr/debug-action@v1.0.0
+    # - name: Debug Action
+    #   uses: hmarr/debug-action@v1.0.0
     # - name: Comment on Jira Ticket
     #   uses: atlassian/gajira-comment@master
     #   if: ${{ github.event.pull_request_review.state == "APPROVED" }}
