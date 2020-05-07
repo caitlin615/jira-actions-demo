@@ -27,14 +27,12 @@ jobs:
       id: github-comment
       with:
         script: |
-          const pull_number = context.payload.pull_request.number
-          console.log(pull_number)
           const comments = await github.pulls.listComments({
             owner: context.repo.owner,
             repo: context.repo.repo,
-            pull_number
+            pull_number: context.payload.pull_request.number
           })
-          console.log(JSON.stringify(comments.data))
+          console.log(JSON.stringify(comments))
 
 # const comment = await github.pulls.getComment({
 #   owner: context.repo.owner,
