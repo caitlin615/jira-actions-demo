@@ -33,7 +33,11 @@ required approvals.
 * GitHub branch protection rules allows you to set the number of `Required approving reviews` to 2 and set `Require review from Code Owners`
 * The problem is, a PR can get approved for merge by 2 members of *Alpha* without *Beta* ever approving.
 
-This GitHub action allows you to require approvals from each team explicitly
+This GitHub action allows you to require approvals from each team explicitly.
+
+**NOTE** Actions triggered from a `pull_request_review` does not update a PR status check, so it is difficult to use this as a PR gate. See <https://github.community/t5/GitHub-Actions/pull-request-review-doesn-t-update-PR-status-checks/td-p/43186>.
+
+You will need to manually re-run this check (or update the PR) for the PR check to update after a PR has been approved
 
 ### Secrets
 
