@@ -22,7 +22,7 @@ GitHub secrets:
 * `JIRA_TRANSITION_CLOSE_MERGED`: Where to transition Issue when the PR is closed and merged.
 * `JIRA_TRANSITION_CLOSE_UNMERGED`: Where to transition Issue when PR is closed _without_ merging.
 
-### Requiring a specific team for PR approvals
+## Requiring a specific team for PR approvals
 
 [.github/workflows/required-approvers.yaml](.github/workflows/required-approvers.yaml) gives you more fine-grained control over who is required to approve a PR before it can be merged. It will fail a GitHub check if the PR does not have at least 2 approvers from the specified group. This provides additional protections outside of the typical Codeowners
 required approvals.
@@ -35,7 +35,7 @@ required approvals.
 
 This GitHub action allows you to require approvals from each team explicitly
 
-##### Secrets
+### Secrets
 
 * `TEAM_SLUG_REQUIRED_APPROVERS`: GitHub team slug within the owner's org. At least 2 members of this group will be required to approve a PR
-* `MIN_APPROVERS`: Minimum number of approvers required from this team
+* `ORG_GITHUB_TOKEN`: Github Access Token with `read:org` access, to look up members of team. See <https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line>

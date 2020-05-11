@@ -1,19 +1,20 @@
 on:
   [pull_request, pull_request_review]
 
-name: Update Jira Ticket
+name: Required Approvers
 
 jobs:
-  build:
+  check:
     runs-on: ubuntu-latest
     steps:
-
+    # listing members in GH team is not a permission afforded to the built-in GITHUB_TOKEN
+    # So this using a different token that has `read:org` permissions
     - uses: actions/github-script@0.9.0
-      id: github-comment
+      id: team_approvers
       env:
         TEAM_SLUG: ${{ secrets.TEAM_SLUG_REQUIRED_APPROVERS }}
-        MIN_APPROVERS: ${{ secrets.MIN_APPROVERS }}
       with:
+        github-token: ${{ secrets.ORG_GITHUB_TOKEN }}
         script: |
           // Get all the team member logins
           const team_approvers = await github.teams.listMembersInOrg({
@@ -21,7 +22,16 @@ jobs:
             team_slug: process.env.TEAM_SLUG,
             pull_number: context.payload.pull_request.number
           })
-          const team_approver_logins = team_approver.map(t => t.login)
+          const team_approver_logins = team_approvers.data.map(t => t.login)
+          return team_approver_logins
+
+    - uses: actions/github-script@0.9.0
+      env:
+        MIN_APPROVERS: 2
+        REQUIRED_APPROVERS: "${{ steps.team_approvers.outputs.result }}"
+      with:
+        script: |
+          team_approver_logins = JSON.parse(process.env.REQUIRED_APPROVERS)
 
           // Get all the reviews
           const reviews = await github.pulls.listReviews({
@@ -32,10 +42,10 @@ jobs:
 
           // Filter reviews by approvals and if the approver is in the team specified
           const approvers = reviews.data.filter(r => {
-            return r.state == "APPROVED" && team_approver_logins.contains(r.user.login)
+            return r.state == "APPROVED" && team_approver_logins.includes(r.user.login)
           })
 
           // Fail the step if there are not enough approvers
-          if (approvers.length) < process.env.MIN_APPROVERS {
-            core.setFailed(`${process.env.MIN_APPROVERS} approval(s) from ${process.env.TEAM_SLUG} are required")
+          if (approvers.length < process.env.MIN_APPROVERS) {
+            core.setFailed(`${process.env.MIN_APPROVERS} approval(s) are required`)
           }
